@@ -1,0 +1,77 @@
+html,
+body {
+  height: 100%;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.py-4 {
+  --bs-bg-opacity: 1;
+  background-color: #ff6e301a;
+}
+
+.form-signin {
+  max-width: 400px;
+  padding: 1rem;
+}
+
+.form-signin .form-floating:focus-within {
+  z-index: 2;
+}
+
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0 wd;
+  border-top-right-radius: 0;
+}
+
+.fw-normal{
+  padding-bottom: 50px;
+  justify-content: center;
+  display: flex;
+}
+
+.h3, h3 {
+  font-size: calc(5rem + .6vw);
+  color: #ff6e30;
+}
+
+.btn-outline-primary {
+  --bs-btn-color: #ff6e30;
+  --bs-btn-border-color: #ff6e30;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #ff6e30;
+  --bs-btn-hover-border-color: #ff6e30;
+  --bs-btn-focus-shadow-rgb: 13,110,253;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #ff6e30;
+  --bs-btn-active-border-color: #ff6e30;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #ff6e30;
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: #ff6e30;
+  --bs-gradient: none;
+}
+
+
+.form-signin input[type="password"] {
+  margin-bottom: 30px;
+}
+
+.btn {
+  --bs-btn-padding-x: 150px;
+  --bs-btn-padding-y: 75px;
+   margin-bottom: 10px;
+  font-size: 200%;
+  border-radius: 20%;
+  border-width: 5px;
+}
+
+.image {
+  margin-bottom: 10px;
+}

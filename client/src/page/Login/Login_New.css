@@ -1,0 +1,61 @@
+
+login {
+  
+  .form-signin {
+    max-width: 330px;
+    padding: 1rem;
+  }
+
+  .setz {
+    height: 920px;
+  }
+  
+  .form-signin .form-floating:focus-within {
+    z-index: 2;
+  }
+  
+  .form-signin input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  
+  .form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+  
+  .fw-normal{
+    padding-bottom: 50px;
+    justify-content: center;
+    display: flex;
+  }
+  
+  .h3, h3 {
+    font-size: calc(5rem + .6vw);
+    color: #ff6e30;
+    padding-top: 220px;
+  }
+  
+  .btn-primary {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #ff6e30;
+    --bs-btn-border-color: #ff6e30;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #fa5e1c;
+    --bs-btn-hover-border-color: #fd4e03;
+    --bs-btn-focus-shadow-rgb: 49,132,253;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #fd4e03;
+    --bs-btn-active-border-color: #fa5e1c;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #ff6e30;
+    --bs-btn-disabled-border-color: #ff6e30;
+  }
+  
+  .form-signin input[type="password"] {
+    margin-bottom: 30px;
+  }
+}

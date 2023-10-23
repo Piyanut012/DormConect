@@ -1,0 +1,9 @@
+body {
+  height: 100%;
+  font-family: 'Times New Roman', Times, serif;
+
+  .py-4 {
+    --bs-bg-opacity: 1;
+    background-color: #ff6e301a;
+  }
+}
