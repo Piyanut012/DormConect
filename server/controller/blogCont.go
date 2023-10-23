@@ -217,7 +217,7 @@ func BlogDelete(c *fiber.Ctx) error {
 	return c.JSON(context)
 }
 
-// add
+// Login
 func Login_Stu(c *fiber.Ctx) error {
 	// username := c.FormValue("username")
 	// password := c.FormValue("password")
@@ -632,4 +632,106 @@ func UpdateBillStatus(c *fiber.Ctx) error {
 
 	database.DBConn.Model(&bill).Update("status", "PAID")
 	return c.JSON(bill)
+}
+
+// ยังไม่ทำ 3
+func GetOccupants(c *fiber.Ctx) error {
+
+	RoomID := c.Params("roomid")
+
+	var occupants []struct {
+		StudentID int    `json:"student_id"`
+		Firstname string `json:"firstname"`
+		Lastname  string `json:"lastname"`
+	}
+
+	if err := database.DBConn.Table("kmitl_stu").
+		Joins("JOIN dorm_stu ON dorm_stu.student_id = kmitl_stu.student_id").
+		Where("room_id = ?", RoomID).
+		Find(&occupants).Error; err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Room not found"})
+	}
+
+	if len(occupants) == 0 {
+		return c.JSON("Vacant room")
+	}
+
+	return c.JSON(occupants)
+}
+
+// ยังไม่ทำ 4
+func AssignRoom(c *fiber.Ctx) error {
+
+	studentID := c.Params("studentid")
+
+	var dormStu model.DormStudent
+
+	if err := database.DBConn.
+		Where("student_id = ?", studentID).First(&dormStu).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Student not found"})
+	}
+
+	var updateRoom map[string]string
+	if err := c.BodyParser(&updateRoom); err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Invalid data"})
+	}
+
+	// Check if the status to update is valid
+	Room := updateRoom["room_id"]
+
+	database.DBConn.Model(&dormStu).Update("room_id", Room)
+	return c.JSON(dormStu)
+}
+
+// ยังไม่ทำ 1
+func GetApplications(c *fiber.Ctx) error {
+
+	employeeID := c.Params("employeeid")
+
+	var admin model.Employee
+
+	// Check if the employee with the specified employeeID has the "admin" position
+	if err := database.DBConn.
+		Where("emp_id = ? AND position = ?", employeeID, "admin").
+		First(&admin).Error; err != nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "No Authority"})
+	}
+
+	var applications []model.Application
+
+	if err := database.DBConn.Find(&applications).Error; err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	if len(applications) == 0 {
+		return c.JSON("No applications received")
+	}
+
+	return c.JSON(applications)
+}
+
+// ยังไม่ทำ 2
+func UpdateApplicationStatus(c *fiber.Ctx) error {
+
+	studentID := c.Params("studentid")
+
+	var application model.Application
+
+	if err := database.DBConn.
+		Where("student_id = ?", studentID).First(&application).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Application not found"})
+	}
+
+	var updateData map[string]string
+	if err := c.BodyParser(&updateData); err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Invalid data"})
+	}
+
+	// Check if the status to update is valid
+	newStatus := updateData["status"]
+
+	database.DBConn.Model(&application).Update("status", newStatus)
+	return c.JSON(application)
 }

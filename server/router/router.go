@@ -32,4 +32,11 @@ func SetupRoutes(app *fiber.App) {
 	app.Post("/addbill/:roomid", controller.AddBill)
 	app.Get("/bills_room/:roomid", controller.GetBillingManager)
 	app.Put("/updatebill/:billid", controller.UpdateBillStatus)
+	app.Get("/billing/manager/occupants/:roomid", controller.GetOccupants)
+
+	//Admin
+	app.Get("/admin/applications/:employeeid", controller.GetApplications)
+	app.Put("/admin/applications/filter/:studentid", controller.UpdateApplicationStatus)
+	app.Put("/admin/dormstudents/assignroom/:studentid", controller.AssignRoom)
+
 }

@@ -7,13 +7,12 @@ type Blog struct {
 	Image string `json:"image" gorm:"null;column:image;size:255"`
 }
 
-// add
 type DormStudent struct {
-	Username   string `json:"username" gorm:"primaryKey;column:username"`
-	Password   string `json:"password" gorm:"column:password"`
-	StudentID  int    `gorm:"column:student_id"`
-	RoomID     int    `gorm:"column:room_id"`
-	StudentImg string `gorm:"column:student_img"`
+	Username   string `gorm:"primaryKey" json:"username"`
+	Password   string `json:"password"`
+	StudentID  int    `json:"student_id"`
+	RoomID     int    `gorm:"default:NULL" json:"room_id"`
+	StudentImg string `json:"student_img"`
 }
 
 func (DormStudent) TableName() string {
@@ -22,8 +21,8 @@ func (DormStudent) TableName() string {
 
 type KMITLStudent struct {
 	StudentID int    `gorm:"primaryKey" json:"student_id"`
-	FirstName string `json:"firstname"`
-	LastName  string `json:"lastname"`
+	FirstName string `gorm:"column:firstname" json:"firstname"`
+	LastName  string `gorm:"column:lastname" json:"lastname"`
 	Phone     string `json:"phone"`
 	Email     string `json:"email"`
 	Year      int    `json:"year"`
@@ -38,7 +37,7 @@ type Application struct {
 	Income     string `json:"income"`
 	Distance   string `json:"distance"`
 	Reason     string `json:"reason"`
-	Comment    string `json:"comment"`
+	Comment    string `gorm:"default:'REVIEWING'" json:"status"`
 }
 
 func (KMITLStudent) TableName() string {
