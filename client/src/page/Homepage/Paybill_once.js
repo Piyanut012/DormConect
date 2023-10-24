@@ -87,7 +87,7 @@ const Edit = () => {
     <body>
       <Slidebar/>
       <hometest>
-      <div className="py-4 setz">
+      <div className="py-4">
           <meta charSet="UTF-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
           <title>Document</title>

@@ -1,5 +1,5 @@
 
-hometest {
+checkinfo {
 
   .setz {
     height: 920px;
@@ -77,12 +77,37 @@ hometest {
     --bs-btn-disabled-color: #fff;
     --bs-btn-disabled-bg: #ff6e30;
     --bs-btn-disabled-border-color: #ff6e30;
+      margin-top: -8px;
   }
 
   .submitted {
     background-color: green;
   }
 
+  .table {
+    background-color: #FFA500; /* Set the background color to orange */
+    color: white; /* Set the text color to white */
+  }
+  
+  .table th {
+    background-color: #FF6347; /* Set the header background color to a darker shade of orange */
+    color: white; /* Set the header text color to white */
+  }
+  
+  .table th, .table td {
+    border: 1px solid #FFFFFF; /* Set a white border for table cells */
+  }
+  
+  .action {
+    width: 11rem;
+  }
+
+  .form-group {
+    margin-bottom: -30px;
+  }
+  .mr-2 {
+    margin-left: 84px;
+  }
+
 }
 
-  

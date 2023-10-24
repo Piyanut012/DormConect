@@ -40,7 +40,6 @@ import Add_News_Admin from "./page/Admin/Add_News";
 import Homepage_Secur from "./page/Security/Homepage";
 import Check_late_Secur from "./page/Security/Check_late";
 
-
 function App() {
 
   return (
@@ -74,7 +73,7 @@ function App() {
         <Route path="/checkinfo_admin/:id" element={<CheckInfo_Admin />}/>
         <Route path="/add_news_admin/:id" element={<Add_News_Admin />}/>
         
-        {/* Admin */}
+        {/* Security */}
         <Route path="/homepage_secur/:id" element={<Homepage_Secur />}/>
         <Route path="/check_late_secur/:id" element={<Check_late_Secur />}/>
 

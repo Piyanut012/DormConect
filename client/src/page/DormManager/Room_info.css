@@ -2,7 +2,7 @@
 roominfo {
 
   .setz {
-    height: 920px;
+    height: auto;
   }
   .nav-link.px-2 {
     font-size: 500%;
@@ -298,6 +298,11 @@ roominfo {
     margin-bottom: 1rem;
   }
 
+  .card {
+    --bs-card-border-width: 5px!important;
+    --bs-card-border-color: #ff6e30!important;
+  }
+
 }
 
 modell {
@@ -322,6 +327,12 @@ modell {
     --bs-btn-disabled-border-color: #ff6e30;
     margin-bottom: 10px;
   }
+
+  .choosefile {
+    margin-bottom: 10px;
+  }
+
+  
 }
 
   

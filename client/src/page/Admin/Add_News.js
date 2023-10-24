@@ -21,15 +21,20 @@ const Edit = () => {
 
   const saveForm = async (data) => {
     setLoading(true);
-    // console.log(data);
+    data.file = data.image[0];
+    data.image = null ;
 
     try {
-      const apiUrl = process.env.REACT_APP_API_ROOT + "/report/" + params.id;
-      const response = await axios.post(apiUrl, data);
+      const apiUrl = process.env.REACT_APP_API_ROOT + "/admin/news/addnews/" + params.id;
+      const response = await axios.post(apiUrl, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        }
+      });
 
-      if (response.status === 201) {
+      if (response.status === 200) {
         console.log(response);
-        navigate(`/homepage/${params.id}`);
+        navigate(`/homepage_admin/${params.id}`);
       }
 
       setLoading(false);
@@ -51,7 +56,7 @@ const Edit = () => {
 
   return (
     <body>
-      <report>
+      <addnews>
         <div className="py-4 setz">
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -72,35 +77,49 @@ const Edit = () => {
           <div className="container col-xxl-8 px-4 py-5">
             <div className="row flex-lg-row-reverse align-items-center g-5 py-5">
               <div className="form-floating">
-                    <textarea 
-                    defaultValue=""
-                    className= {`${errors.description && "error"} form-control`}
-                    placeholder="Leave a comment here" id="floatingTextarea2" style={{height: '100px'}}
-                    {...register("description", {
-                      required: {
-                        value: true,
-                        message: "Post Content is required.",
-                      },
-                    })}
+                <Col xs="12" className="py-3">
+                  <input
+                      defaultValue=""
+                      className={`${errors.username && "error"} form-control`}
+                      placeholder="หัวข้อ"
+                      {...register("title", {
+                        required: {
+                          value: true,
+                          message: "Post Content is required.",
+                        },
+                      })}
                     />
-                <label htmlFor="floatingTextarea2">รายละเอียด</label>
+                </Col>
+                <Col xs="12" className="py-3">
+                  <textarea
+                  defaultValue=""
+                  className= {`${errors.description && "error"} form-control`}
+                  placeholder="รายละเอียด" id="floatingTextarea2" style={{height: '100px'}}
+                  {...register("description", {
+                    required: {
+                      value: true,
+                      message: "Post Content is required.",
+                    },
+                  })}
+                  />
+                </Col>
               </div>
               <Col xs="12" className="py-3">
                 <label>Image</label>
                 <input
                   type="file"
+                  name="file"
                   className={`${errors.image && "error"}`}
                   placeholder="Please enter content"
                   {...register("image")}
                 />
               </Col>
-
               <button className="btn btn-primary w-100 py-2" type="submit">เพิ่ม</button>
             </div>
           </div>
         </form>
         </div>
-        </report>
+        </addnews>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"  crossorigin="anonymous"></script>
       </body>
   );

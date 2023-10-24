@@ -1,6 +1,7 @@
 import React from "react";
 import { Col, Container, Row, } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
+import { MDBCol, MDBContainer, MDBRow, MDBCard, MDBCardText, MDBCardBody, MDBCardImage, MDBTypography, MDBIcon } from 'mdb-react-ui-kit';
 
 import axios from "axios";
 import { useState, useEffect } from "react";
@@ -13,31 +14,73 @@ import "./Room_info.css";
 import Slidebar from '../../components/SildeBar_Dorm';
 
 const Home = () => {
-    const [apiData, setApiData] = useState(false);
+    const [apiData_Bills, setApiData_Bills] = useState(false);
+    const [apiData_Stu, setApiData_Stu] = useState(false);
     const [loading, setLoading] = useState(true);
     const [showAddBillModal, setShowAddBillModal] = useState(false);
-    const params = useParams();
     const [selectedImage, setSelectedImage] = useState(null); // State for selected image
+    const [showAddStudentButton, setShowAddStudentButton] = useState(false); // New state for the "Add Student" button
+    const [showAddStuModal, setShowAddStuModal] = useState(false);
 
     const location = useLocation();
+    const params = useParams();
 
+    //Bill
     const openAddBillModal = () => {
       setShowAddBillModal(true);
     };
-
     const closeAddBillModal = () => {
       setShowAddBillModal(false);
       reset();
     };
 
-    const fetchData = async () => {
+    //Student
+    const openAddStuModal = () => {
+      setShowAddStuModal(true);
+    };
+    const closeAddStuModal = () => {
+      setShowAddStuModal(false);
+      reset();
+    };
+
+    const [billForm, setBillForm] = useState({
+      water: "",
+      electricity: "",
+      room: "",
+    });
+  
+    // Form states and functions for Add Student modal
+    const [studentForm, setStudentForm] = useState({
+      student_id: "",
+    });
+
+    //get Stundent in room
+    const fetchData_Stu = async () => {
+      try {
+        console.log(params.id);
+        const apiUrl = process.env.REACT_APP_API_ROOT + "/billing/manager/occupants/" + params.roomid;
+        const response = await axios.get(apiUrl);
+
+        if (response.status === 200){
+            setApiData_Stu(response?.data);
+        }
+
+        setLoading(false);
+      }catch (error){
+        setLoading(false);
+        console.log(error.response);
+      }
+    };
+
+    //get Bills in room
+    const fetchData_Bills = async () => {
       try {
         console.log(params.id);
         const apiUrl = process.env.REACT_APP_API_ROOT + "/bills_room/" + params.roomid;
         const response = await axios.get(apiUrl);
 
         if (response.status === 200){
-            setApiData(response?.data);
+            setApiData_Bills(response?.data);
         }
 
         setLoading(false);
@@ -47,9 +90,15 @@ const Home = () => {
       }
     };
     useEffect(() => {
-      fetchData();
+      fetchData_Stu();
+      fetchData_Bills();
     return () => {};
     }, []);
+
+    useEffect(() => {
+      // Update the visibility of the "Add Student" button based on apiData_Stu
+      setShowAddStudentButton(apiData_Stu.length > 0 && apiData_Stu);
+    }, [apiData_Stu]);
 
     //2.form handling and saving
   const {
@@ -60,22 +109,102 @@ const Home = () => {
   } = useForm();
 
   //add bill
-  const saveForm = async (data) => {
+  // const saveForm = async (data) => {
+  //   setLoading(true);
+  //   console.log("เข้าบิลได้ไง")
+
+  //   data.water = parseInt(data.water, 10);
+  //   data.electricity = parseInt(data.electricity, 10);
+  //   data.room = parseInt(data.room, 10);
+
+  //   try {
+  //     const apiUrl = process.env.REACT_APP_API_ROOT + "/addbill/" + params.roomid;
+  //     const response = await axios.post(apiUrl, data);
+
+  //     if (response.status === 200) {
+  //       console.log(response);
+  //       closeAddBillModal();
+  //       reset();
+  //       fetchData_Bills();
+  //     }
+
+  //     setLoading(false);
+  //   } catch (error) {
+  //     setLoading(false);
+  //     console.log(error.response);
+  //   }
+  // };
+
+  // //Add Student in room
+  // const Add_Stu = async (data) => {
+  //   setLoading(true);
+  //   console.log("เข้า")
+
+  //   data.student_id= parseInt(data.student_id, 10);
+
+  //   try {
+  //     const apiUrl = process.env.REACT_APP_API_ROOT + "/add_student/" + params.roomid;
+  //     const response = await axios.post(apiUrl, data);
+
+  //     if (response.status === 200) {
+  //       console.log(response);
+  //       closeAddStuModal();
+  //       reset();
+  //       fetchData_Stu();
+  //     }
+
+  //     setLoading(false);
+  //   } catch (error) {
+  //     setLoading(false);
+  //     console.log(error.response);
+  //   }
+  // };
+
+  // Handle Add Bill form submission
+  const handleAddBillSubmit = async (e) => {
     setLoading(true);
 
-    data.water = parseInt(data.water, 10);
-    data.electricity = parseInt(data.electricity, 10);
-    data.room = parseInt(data.room, 10);
+    // Extract the data from the billForm state
+    const data = {
+      water: parseInt(billForm.water, 10),
+      electricity: parseInt(billForm.electricity, 10),
+      room: parseInt(billForm.room, 10),
+    };
 
     try {
       const apiUrl = process.env.REACT_APP_API_ROOT + "/addbill/" + params.roomid;
       const response = await axios.post(apiUrl, data);
 
       if (response.status === 200) {
-        console.log(response);
         closeAddBillModal();
-        reset();
-        fetchData();
+        resetBillForm(); // Reset the form
+        fetchData_Bills();
+      }
+
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log(error.response);
+    }
+  };
+
+  // Handle Add Student form submission
+  const handleAddStudentSubmit = async (e) => {
+    setLoading(true);
+
+    // Extract the data from the studentForm state
+    const data = {
+      student_id: parseInt(studentForm.student_id, 10),
+    };
+
+    try {
+      const apiUrl = process.env.REACT_APP_API_ROOT + "/add_student/" + params.roomid;
+      const response = await axios.post(apiUrl, data);
+
+      if (response.status === 200) {
+        closeAddStuModal();
+        resetStudentForm(); // Reset the form
+        fetchData_Stu();
       }
 
       setLoading(false);
@@ -96,7 +225,7 @@ const Home = () => {
 
       if (response.status === 200) {
         console.log(response);
-        fetchData();
+        fetchData_Bills();
       }
 
       setLoading(false);
@@ -106,7 +235,25 @@ const Home = () => {
     }
   };
 
-  console.log(apiData);
+
+  // Reset the Add Bill form
+  const resetBillForm = () => {
+    setBillForm({
+      water: "",
+      electricity: "",
+      room: "",
+    });
+  };
+
+  // Reset the Add Student form
+  const resetStudentForm = () => {
+    setStudentForm({
+      student_id: "",
+    });
+  };
+
+  console.log(apiData_Bills);
+  console.log(apiData_Stu);
     
     if (loading) {
       return (
@@ -122,7 +269,7 @@ const Home = () => {
       <body>
         <Slidebar/>
         <roominfo>
-          <div className="py-4 setz">
+          <div className="py-4">
           <meta charSet="UTF-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
           <title>Document</title>
@@ -143,19 +290,95 @@ const Home = () => {
                 <li><a href="#" className="nav-link px-2">ห้อง {params.roomid}</a></li>
               </ul>
               <div className="col-md-3 text-end option">
-                {/* <Link to={`/rooms_dorm/${params.id}/room_info/${params.roomid}/add_bill`}> */}
-                  <button type="button" class="btn btn-outline-primary btn-option me-2" onClick={openAddBillModal} >เพิ่มบิล</button>
-                {/* </Link> */}
-                <button type="button" class="btn btn-outline-primary btn-option me-2">Sign-up</button>
+                {(!showAddStudentButton || apiData_Stu.length < 2) && (
+                  <button type="button" className="btn btn-outline-primary btn-option me-2" onClick={openAddStuModal}>
+                    เพิ่มนักศึกษา
+                  </button>
+                )}
+                {showAddStudentButton && (
+                  <button type="button" className="btn btn-outline-primary btn-option me-2" onClick={openAddBillModal}>
+                    เพิ่มบิล
+                  </button>
+                )}
               </div>
             </header>
           </div>
-            <div className="container px-4 py-5" id="hanging-icons">
+          <div className="container px-4 py-5" id="hanging-icons">
+            <div className="row g-4 py-5 row-cols-1 row-cols-lg-3">
+            {/* info_stu */}
+            {/* <section className="vh-100" style={{ backgroundColor: '#f4f5f7' }}>
+              <MDBContainer className="py-5 h-100">
+                <MDBRow className="justify-content-center align-items-center h-100"> */}
+                {apiData_Stu && Array.isArray(apiData_Stu) &&
+                  apiData_Stu.map((Stu, index) => {
+                  if (Stu.year !== 0) {
+                    return (
+                  <MDBCol lg="6" className="mb-4 mb-lg-0">
+                    <MDBCard className="mb-3" style={{ borderRadius: '.5rem' }}>
+                      <MDBRow className="g-0">
+                        <MDBCol md="4" className="gradient-custom text-center "
+                          style={{ borderTopLeftRadius: '.5rem', borderBottomLeftRadius: '.5rem' }}>
+                          <MDBCardImage src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
+                            alt="Avatar" className="my-5" style={{ width: '80px' }} fluid />
+                          <MDBTypography tag="h5">{Stu.firstname} {Stu.lastname}</MDBTypography>
+                          <MDBCardText>{Stu.student_id}</MDBCardText>
+                          <MDBIcon far icon="edit mb-5" />
+                        </MDBCol>
+                        <MDBCol md="8">
+                          <MDBCardBody className="p-4">
+                            <MDBTypography tag="h6">Information</MDBTypography>
+                            <hr className="mt-0 mb-4" />
+                            <MDBRow className="pt-1">
+                              <MDBCol size="6" className="mb-3">
+                                <MDBTypography tag="h6">Email</MDBTypography>
+                                <MDBCardText className="text-muted">{Stu.email}</MDBCardText>
+                              </MDBCol>
+                              <MDBCol size="6" className="mb-3">
+                                <MDBTypography tag="h6">Phone</MDBTypography>
+                                <MDBCardText className="text-muted">{Stu.phone}</MDBCardText>
+                              </MDBCol>
+                            </MDBRow>
+
+                            {/* <MDBTypography tag="h6">Information</MDBTypography> */}
+                            <hr className="mt-0 mb-4" />
+                            <MDBRow className="pt-1">
+                              <MDBCol size="6" className="mb-3">
+                                <MDBTypography tag="h6">Faculty</MDBTypography>
+                                <MDBCardText className="text-muted">{Stu.faculty}</MDBCardText>
+                              </MDBCol>
+                              <MDBCol size="6" className="mb-3">
+                                <MDBTypography tag="h6">Year</MDBTypography>
+                                <MDBCardText className="text-muted">{Stu.year}</MDBCardText>
+                              </MDBCol>
+                            </MDBRow>
+
+                            <div className="d-flex justify-content-start">
+                              <a href="#!"><MDBIcon fab icon="facebook me-3" size="lg" /></a>
+                              <a href="#!"><MDBIcon fab icon="twitter me-3" size="lg" /></a>
+                              <a href="#!"><MDBIcon fab icon="instagram me-3" size="lg" /></a>
+                            </div>
+                          </MDBCardBody>
+                        </MDBCol>
+                      </MDBRow>
+                    </MDBCard>
+                  </MDBCol>
+                  );
+                }
+                return null;
+                   }) 
+                  }
+                </div>
+                {/* </MDBRow>
+              </MDBContainer>
+            </section> */}
+
               <div className="row g-4 py-5 row-cols-1 row-cols-lg-3">
-                {/* reports */}
-                {apiData && Array.isArray(apiData) &&
-                  apiData.map((bills, index) => {
-                  if (bills.status !== "PAID") {
+                {/* bills */}
+                {apiData_Bills && Array.isArray(apiData_Bills) &&
+                  apiData_Bills.map((bills, index) => {
+                    const date = new Date(bills.bill_date);
+                    const monthName = new Intl.DateTimeFormat('en', { month: 'long' }).format(date); // Get the month name
+                    if (bills.status !== "PAID") {
                     return (
                       <Col
                         id={`report_${bills.bill_id}`}
@@ -169,15 +392,14 @@ const Home = () => {
                         </svg>
                         </div>
                         <Col>
-                          <h3 className="fs-2 text-body-emphasis">ยอดรวม</h3>
-                          <p>{bills.water + bills.electricity + bills.room}</p>
+                          <h3 className="fs-2 text-body-emphasis">{monthName}</h3>
+                          <p>ยอดรวม {bills.water + bills.electricity + bills.room}</p>
                           <Col xs="12" className="py-3">
                             <label className="setx">ใบเสร็จ</label>
                             <img src={`${process.env.REACT_APP_API_ROOT}/${bills.receipt}`} className="d-block mx-lg-auto" alt="None" width={50} height={75} loading="lazy"
                             onClick={() => setSelectedImage(`${process.env.REACT_APP_API_ROOT}/${bills.receipt}`)} // Open image in modal
                             style={{ cursor: "pointer" }}
                             />
-
                             {bills.status === 'VERIFYING' && (
                               <form onSubmit={(e) => { e.preventDefault(); checkbill(bills.bill_id); }}>
                                 <Col className="col-md-3 text-end">
@@ -185,7 +407,6 @@ const Home = () => {
                                 </Col>
                               </form>
                             )}
-
                           </Col>
                         </Col>
                       </Col>
@@ -209,7 +430,7 @@ const Home = () => {
           </Modal.Body>
         </Modal>
         )}
-        {/* Inside the modal */}
+        {/* Inside the modal Add bill*/}
         <Modal show={showAddBillModal} onHide={closeAddBillModal}>
           <Modal.Header closeButton>
             <Modal.Title>เพิ่มบิล</Modal.Title>
@@ -217,42 +438,93 @@ const Home = () => {
           <Modal.Body>
           <modell>
           <main className="form-signin w-100 m-auto">
-            <form onSubmit={handleSubmit(saveForm)}>
+            <form onSubmit={handleSubmit(handleAddBillSubmit)}>
             <Col className="form-floating">
-              <input
+              {/* <input
                 defaultValue=""
                 type="number"
                 className={`${errors.water && "error"} form-control setinput`}
                 {...register("water", {
                   required: { value: true, message: "Title is required." },
                 })}
+              /> */}
+              <input
+                type="number"
+                className={`${errors.water && "error"} form-control setinput`}
+                value={billForm.water}
+                onChange={(e) =>
+                  setBillForm({ ...billForm, water: e.target.value })
+                }
               />
               <label htmlFor="floatingInput">น้ำ</label>
             </Col>
             <Col className="form-floating">
-              <input
+              {/* <input
                 defaultValue=""
                 type="number"
                 className={`${errors.electricity && "error"} form-control setinput`}
                 {...register("electricity", {
                   required: { value: true, message: "Title is required." },
                 })}
+              /> */}
+              <input
+                type="number"
+                className={`${errors.electricity && "error"} form-control setinput`}
+                value={billForm.electricity}
+                onChange={(e) =>
+                  setBillForm({ ...billForm, electricity: e.target.value })
+                }
               />
               <label htmlFor="floatingInput">ไฟ</label>
             </Col>
             <Col className="form-floating">
-              <input
+              {/* <input
                 defaultValue=""
                 type="number"
                 className={`${errors.room && "error"} form-control setinput`}
                 {...register("room", {
                   required: { value: true, message: "Title is required." },
                 })}
+              /> */}
+              <input
+                type="number"
+                className={`${errors.room && "error"} form-control setinput`}
+                value={billForm.room}
+                onChange={(e) =>
+                  setBillForm({ ...billForm, room: e.target.value })
+                }
               />
               <label htmlFor="floatingInput">ห้อง</label>
             </Col>
               <button type="submit" className="btn btn-primary w-100 py-2 setbutton">Add</button>
               <button type="button" className="btn btn-primary w-100 py-2 setbutton" onClick={closeAddBillModal}>Cancel</button>
+            </form>
+            </main>
+            </modell>
+          </Modal.Body>
+        </Modal>
+        {/* Inside the modal Add Student */}
+        <Modal show={showAddStuModal} onHide={closeAddStuModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>เพิ่มนักศึกษา</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          <modell>
+          <main className="form-signin w-100 m-auto">
+            <form onSubmit={handleSubmit(handleAddStudentSubmit)}>
+            <Col className="form-floating">
+              <input
+                type="number"
+                className={`${errors.student_id && "error"} form-control setinput`}
+                value={studentForm.student_id}
+                onChange={(e) =>
+                  setStudentForm({ ...studentForm, student_id: e.target.value })
+                }
+              />
+              <label htmlFor="floatingInput">รหัสนักศึกษา</label>
+            </Col>
+              <button type="submit" className="btn btn-primary w-100 py-2 setbutton">Add</button>
+              <button type="button" className="btn btn-primary w-100 py-2 setbutton" onClick={closeAddStuModal}>Cancel</button>
             </form>
             </main>
             </modell>

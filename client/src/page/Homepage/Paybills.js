@@ -15,10 +15,21 @@ import Slidebar from '../../components/SildeBar_Stu';
 const Home = () => {
     const [apiData, setApiData] = useState(false);
     const [loading, setLoading] = useState(true);
-    const params = useParams();
     const [selectedImage, setSelectedImage] = useState(null); // State for selected image
+    const [showAddBillModal, setShowAddBillModal] = useState(false);
+    const [BillId, setBillId] = useState(null);
 
     const location = useLocation();
+    const params = useParams();
+
+    const openAddBillModal = (BillId) => {
+      setBillId(BillId);
+      setShowAddBillModal(true);
+    };
+
+    const closeAddBillModal = () => {
+      setShowAddBillModal(false);
+    };
 
     const fetchData = async () => {
       try {
@@ -49,13 +60,13 @@ const Home = () => {
 
   const saveForm = async (data, id) => {
     setLoading(true);
-    const recordId = id;
+    const  BillId = id;
 
     data.file = data.receipt[0];
     data.receipt = null ;
 
     try {
-      const apiUrl = process.env.REACT_APP_API_ROOT + "/billing/" + recordId;
+      const apiUrl = process.env.REACT_APP_API_ROOT + "/billing/" + BillId;
       const response = await axios.post(apiUrl, data, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -64,6 +75,7 @@ const Home = () => {
 
       if (response.status === 200) {
         console.log(response);
+        closeAddBillModal();
         fetchData();
       }
 
@@ -90,7 +102,7 @@ const Home = () => {
       <body>
         <Slidebar/>
         <paybills>
-          <div className="py-4 setz">
+          <div className="py-4">
           <meta charSet="UTF-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
           <title>Document</title>
@@ -120,8 +132,10 @@ const Home = () => {
             <div className="container px-4 py-5" id="hanging-icons">
               <div className="row g-4 py-5 row-cols-1 row-cols-lg-3">
                 {/* reports */}
-                {apiData && 
+                {apiData && Array.isArray(apiData) &&
                   apiData.map((bills, index) => {
+                    const date = new Date(bills.bill_date);
+                    const monthName = new Intl.DateTimeFormat('en', { month: 'long' }).format(date); // Get the month name
                   if (bills.status !== "555") {
                     return (
                       <Col
@@ -136,8 +150,8 @@ const Home = () => {
                         </svg>
                         </div>
                         <Col>
-                          <h3 className="fs-2 text-body-emphasis">ยอดรวม</h3>
-                          <p>{bills.water + bills.electricity + bills.room}</p>
+                          <h3 className="fs-2 text-body-emphasis">{monthName}</h3>
+                          <p>ยอดรวม {bills.water + bills.electricity + bills.room}</p>
                           <Col xs="12" className="py-3">
                             <label className="setx">ใบเสร็จ</label>
                             <img src={`${process.env.REACT_APP_API_ROOT}/${bills.receipt}`} className="d-block mx-lg-auto" alt="None" width={50} height={75} loading="lazy"
@@ -145,18 +159,10 @@ const Home = () => {
                             style={{ cursor: "pointer" }}
                             />
                             {(bills.status === 'UNPAID' || bills.status === 'VERIFYING') &&(
-                              <form onSubmit={handleSubmit(data => saveForm(data, bills.bill_id))}>
-                              <input
-                                type="file"
-                                name={`receipt_${bills.bill_id}`} // Use a unique name based on the bill_id
-                                className={`${errors[`receipt_${bills.bill_id}`] && "error"}`}
-                                placeholder="Please enter content"
-                                {...register(`receipt_${bills.bill_id}`)}
-                              />
                               <Col className="col-md-3 text-end">
-                                <button type="submit" className="btn btn-outline-primary me-2" >Save</button>
+                                <button type="submit" className="btn btn-outline-primary me-2 " onClick={() => openAddBillModal(bills.bill_id)} >แจ้ง</button>
                               </Col>
-                            </form>
+                            // </form>
                             )}
                           </Col>
                         </Col>
@@ -181,6 +187,31 @@ const Home = () => {
           </Modal.Body>
         </Modal>
         )}
+
+         {/* Inside the modal */}
+         <Modal show={showAddBillModal} onHide={closeAddBillModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>เพิ่มไฟล์รูปภาพ</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          <modell>
+          <main className="form-signin w-100 m-auto">
+            <form onSubmit={handleSubmit(data => saveForm(data, BillId))}>
+              <input
+                type="file"
+                name="file" // Unique name for each file input
+                className={`${errors[`receipt_${BillId}`] && "error"} choosefile`}
+                placeholder="Please enter content"
+              {...register(`receipt`)}
+              />
+              <button type="submit" className="btn btn-primary w-100 py-2 setbutton">Add</button>
+              <button type="button" className="btn btn-primary w-100 py-2 setbutton" onClick={closeAddBillModal}>Cancel</button>
+            </form>
+            </main>
+            </modell>
+          </Modal.Body>
+        </Modal>
+
         </paybills>
       </body>
     );

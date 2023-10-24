@@ -1,5 +1,5 @@
 
-report {
+addnews {
 
   .setz {
     height: 920px;
@@ -91,5 +91,9 @@ report {
 
   .undefined {
     padding-left: 10px;
+  }
+
+  .form-control {
+    border: var(--bs-border-width) solid #ff6e30;
   }
 }

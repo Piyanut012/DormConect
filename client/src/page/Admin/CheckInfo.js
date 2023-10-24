@@ -4,7 +4,7 @@ import { Col, Container, Row, } from "react-bootstrap";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 
 import Spinner from "react-bootstrap/Spinner";
 
@@ -15,22 +15,17 @@ import Slidebar from '../../components/SildeBar_Admin';
 const Home = () => {
     const [apiData, setApiData] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [isSubmitted, setIsSubmitted] = useState(false);
-    const [isSubmittedId, setIsSubmittedId] = useState(null);
 
     const location = useLocation();
+    const params = useParams();
 
-
-    useEffect(() => {
     const fetchData = async () => {
       try {
-        const apiUrl = process.env.REACT_APP_API_ROOT;
+        const apiUrl = process.env.REACT_APP_API_ROOT + "/admin/applications/" + params.id;
         const response = await axios.get(apiUrl);
 
         if (response.status === 200){
-          if (response?.data.statusText === "Ok"){
-            setApiData(response?.data?.blog_records);
-          }
+            setApiData(response?.data);
         }
 
         setLoading(false);
@@ -40,7 +35,8 @@ const Home = () => {
       }
     };
 
-    fetchData();
+    useEffect(() => {
+      fetchData();
     return () => {};
     }, []);
 
@@ -51,26 +47,19 @@ const Home = () => {
     formState: { errors },
   } = useForm();
 
-  const saveForm = async (data, id) => {
+  const saveForm = async (data, student_id, status) => {
     setLoading(true);
-    const recordId = id;
-    // console.log(data);
-    console.log(id);
-    data.file = data.image[0];
-    data.image = null ;
+    console.log(student_id);
+
+    const statusValue = status === "ACCEPTED" ? "ACCEPTED" : "REJECTED";
 
     try {
-      const apiUrl = process.env.REACT_APP_API_ROOT + "/" + recordId;
-      const response = await axios.put(apiUrl, data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        }
-      });
+      const apiUrl = process.env.REACT_APP_API_ROOT + "/admin/applications/filter/" + student_id;
+      const response = await axios.put(apiUrl, { ...data, status: statusValue });
 
       if (response.status === 200) {
         console.log(response);
-        setIsSubmitted(true);
-        setIsSubmittedId(id);
+        fetchData();
       }
 
       setLoading(false);
@@ -96,7 +85,7 @@ const Home = () => {
     return (
       <body>
         <Slidebar/>
-        <hometest>
+        <checkinfo>
           <div className="py-4 setz">
           <meta charSet="UTF-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -124,50 +113,50 @@ const Home = () => {
               </div>
             </header>
           </div>
-          <div className="container px-4 py-5" id="hanging-icons">
-            {/* <h2 class="pb-2 border-bottom">Hanging icons</h2> */}
-            <div className="row g-4 py-5 row-cols-1 row-cols-lg-3">
-              {/* Bill */}
-              {apiData && 
-                apiData.map((record, index) => (
-                    <Col id={`bill_${record.id}`} className={`col d-flex align-items-start bill ${isSubmitted && isSubmittedId === record.id ? "submitted" : ""}`} key={index}>
-                    <div className="icon-square text-body-emphasis bg-body-secondary d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
-                      <svg xmlns="http://www.w3.org/2000/svg" width={30} height={30} fill="currentColor" className="bi bi-building" viewBox="0 0 16 16">
-                        <path d="M4 2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1ZM4 5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1ZM7.5 5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1Zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1ZM4.5 8a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1Zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1Z" />
-                        <path d="M2 1a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V1Zm11 0H3v14h3v-2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5V15h3V1Z" />
-                      </svg>
+        <div className="container px-4 py-5">
+          <table className="table table-bordered">
+            <thead>
+              <tr>
+                <th>รหัสนักศึกษา</th>
+                <th>รายได้</th>
+                <th>ระยะทางจากบ้านมาสถาบัน</th>
+                <th>เหตุผลและความจำเป็น</th>
+                <th className="action"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {apiData.map((applys, index) => (
+                <tr key={index}>
+                  <td>{applys.student_id}</td>
+                  <td>{applys.income}</td>
+                  <td>{applys.distance}</td>
+                  <td>{applys.reason}</td>
+                  <td>
+                  <div className="button-container">
+                  <form onSubmit={handleSubmit(data => saveForm(data, applys.student_id, "ACCEPTED"))}>
+                    <div className="form-group">
+                      <button type="submit" className="btn btn-primary">
+                        ผ่าน
+                      </button>
                     </div>
-                    <div>
-                      <h3 className="fs-2 text-body-emphasis">
-                        <Link to={`paybill/${record.id}`}>{record.title}</Link>
-                      </h3>
-                      <p>{record.post}</p>
-                      {/* <form onSubmit={handleSubmit(data => saveForm(data, record.id))} >
-                        <Col xs="12" className="py-3">
-                          <label>Image</label>
-                          <input
-                            type="file"
-                            className={`${errors.image && "error"}`}
-                            placeholder="Please enter content"
-                            {...register("image")}
-                          />
-                        </Col>
-                        <Col>
-                          <button type="submit">Save</button>
-                        </Col>
-                      </form> */}
-                      <div className="col-md-3 text-end">
-                        <Link to={`/add_bill/${record.id}`}>
-                          <button type="button" className="btn btn-outline-primary me-2" >Add Bill</button>
-                        </Link>
-                      </div>
+                  </form>
+                  <form onSubmit={handleSubmit(data => saveForm(data, applys.student_id, "REJECTED"))}>
+                    <div className="form-group mr-2">
+                      <button type="submit" className="btn btn-primary">
+                        ไม่ผ่าน
+                      </button>
                     </div>
-                  </Col>
-                ))}
-            </div>
+                  </form>
+                  </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
           </div>
-          </div>
-        </hometest>
+        </checkinfo>
       </body>
     );
 }

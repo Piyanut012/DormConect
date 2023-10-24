@@ -1,9 +1,6 @@
 
 paybills {
 
-  .setz {
-    height: 920px;
-  }
   .nav-link.px-2 {
     font-size: 500%;
     color: #ff6e30;
@@ -171,7 +168,7 @@ paybills {
   }
 
   .setz {
-    height: 920px;
+    height: auto;
   }
   
   .nav-link.px-2 {
