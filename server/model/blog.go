@@ -8,11 +8,11 @@ type Blog struct {
 }
 
 type DormStudent struct {
-	Username   string `gorm:"primaryKey" json:"username"`
+	Username   string ` gorm:"primaryKey" json:"username"`
 	Password   string `json:"password"`
 	StudentID  int    `json:"student_id"`
 	RoomID     int    `gorm:"default:NULL" json:"room_id"`
-	StudentImg string `json:"student_img"`
+	StudentImg string `gorm:"default:NULL" json:"student_img"`
 }
 
 func (DormStudent) TableName() string {
@@ -31,13 +31,13 @@ type KMITLStudent struct {
 }
 
 type Application struct {
-	Apply_id   int    `gorm:"primaryKey" json:"apply_id"`
+	ApplyID    int    `gorm:"primaryKey" json:"apply_id"`
 	StudentID  int    `json:"student_id"`
 	BuildingID int    `json:"building_id"`
 	Income     string `json:"income"`
 	Distance   string `json:"distance"`
 	Reason     string `json:"reason"`
-	Comment    string `gorm:"default:'REVIEWING'" json:"status"`
+	Status     string `gorm:"default:'REVIEWING'" json:"status"`
 }
 
 func (KMITLStudent) TableName() string {
@@ -98,4 +98,16 @@ type Billing struct {
 
 func (Billing) TableName() string {
 	return "billing"
+}
+
+type News struct {
+	NewsID      int    `gorm:"primaryKey" json:"news_id"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Image       string `json:"image"`
+	EmpID       int    `json:"emp_id"`
+}
+
+func (News) TableName() string {
+	return "news"
 }

@@ -502,7 +502,7 @@ func UploadReceipt(c *fiber.Ctx) error {
 		return c.Status(400).JSON(fiber.Map{"error": "File upload failed"})
 	}
 
-	filename := "./static/uploads/" + file.Filename
+	filename := "./static/bills/" + file.Filename
 
 	// Save the file to a desired location
 	if err := c.SaveFile(file, filename); err != nil {
@@ -634,7 +634,6 @@ func UpdateBillStatus(c *fiber.Ctx) error {
 	return c.JSON(bill)
 }
 
-// ยังไม่ทำ 3
 func GetOccupants(c *fiber.Ctx) error {
 
 	RoomID := c.Params("roomid")
@@ -643,6 +642,10 @@ func GetOccupants(c *fiber.Ctx) error {
 		StudentID int    `json:"student_id"`
 		Firstname string `json:"firstname"`
 		Lastname  string `json:"lastname"`
+		Phone     string `json:"phone"`
+		Email     string `json:"email"`
+		Year      int    `json:"year"`
+		Faculty   string `json:"faculty"`
 	}
 
 	if err := database.DBConn.Table("kmitl_stu").
@@ -653,37 +656,69 @@ func GetOccupants(c *fiber.Ctx) error {
 	}
 
 	if len(occupants) == 0 {
-		return c.JSON("Vacant room")
+		return c.JSON(occupants)
 	}
 
 	return c.JSON(occupants)
 }
 
-// ยังไม่ทำ 4
-func AssignRoom(c *fiber.Ctx) error {
+func AddDormStudent(c *fiber.Ctx) error {
 
-	studentID := c.Params("studentid")
+	roomid := c.Params("roomid")
 
-	var dormStu model.DormStudent
-
-	if err := database.DBConn.
-		Where("student_id = ?", studentID).First(&dormStu).Error; err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Student not found"})
+	var dormer model.DormStudent
+	if err := c.BodyParser(&dormer); err != nil {
+		log.Println("Error in parsing request.")
 	}
 
-	var updateRoom map[string]string
-	if err := c.BodyParser(&updateRoom); err != nil {
-		return c.Status(400).JSON(fiber.Map{"error": "Invalid data"})
+	var room model.Room
+	if err := c.BodyParser(&room); err != nil {
+		log.Println("Error in parsing request.")
 	}
 
-	// Check if the status to update is valid
-	Room := updateRoom["room_id"]
+	var stud model.Application
+	if err := c.BodyParser(&stud); err != nil {
+		log.Println("Error in parsing request.")
+	}
 
-	database.DBConn.Model(&dormStu).Update("room_id", Room)
-	return c.JSON(dormStu)
+	result := database.DBConn.First(&room, roomid)
+	if result.Error != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Room not found"})
+	}
+
+	roomid_int, err := strconv.Atoi(roomid)
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Invalid RoomID"})
+	}
+
+	stuid_str := strconv.Itoa(dormer.StudentID)
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Invalid StudentID"})
+	}
+
+	check := database.DBConn.Where("student_id = ?", stud.StudentID).First(&stud)
+	if check.Error != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Student ID not found"})
+	}
+
+	dorm_stu := model.DormStudent{
+		Username:  "dorm" + stuid_str,
+		Password:  "dorm1234",
+		StudentID: stud.StudentID,
+		RoomID:    roomid_int,
+	}
+
+	result = database.DBConn.Create(&dorm_stu)
+	if result.Error != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to add student"})
+	}
+
+	database.DBConn.Model(&room).Update("status", "OCCUPIED")
+
+	return c.JSON(dorm_stu)
+
 }
 
-// ยังไม่ทำ 1
 func GetApplications(c *fiber.Ctx) error {
 
 	employeeID := c.Params("employeeid")
@@ -699,7 +734,7 @@ func GetApplications(c *fiber.Ctx) error {
 
 	var applications []model.Application
 
-	if err := database.DBConn.Find(&applications).Error; err != nil {
+	if err := database.DBConn.Where("status = ?", "REVIEWING").Find(&applications).Error; err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"error": err.Error(),
 		})
@@ -712,7 +747,6 @@ func GetApplications(c *fiber.Ctx) error {
 	return c.JSON(applications)
 }
 
-// ยังไม่ทำ 2
 func UpdateApplicationStatus(c *fiber.Ctx) error {
 
 	studentID := c.Params("studentid")
@@ -734,4 +768,103 @@ func UpdateApplicationStatus(c *fiber.Ctx) error {
 
 	database.DBConn.Model(&application).Update("status", newStatus)
 	return c.JSON(application)
+}
+
+func AddNews(c *fiber.Ctx) error {
+
+	empid := c.Params("empid")
+
+	var news model.News
+	if err := c.BodyParser(&news); err != nil {
+		log.Println("Error in parsing request.")
+	}
+
+	var admin model.Employee
+	if err := database.DBConn.
+		Where("emp_id = ? AND position = ?", empid, "Admin").
+		First(&admin).Error; err != nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "No Authority"})
+	}
+
+	empid_int, err := strconv.Atoi(empid)
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Invalid employee ID"})
+	}
+
+	file, err := c.FormFile("file")
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "File upload failed"})
+	}
+
+	filename := "./static/news/" + file.Filename
+	if err := c.SaveFile(file, filename); err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "File saving failed"})
+	}
+
+	newsadd := model.News{
+		Title:       news.Title,
+		Description: news.Description,
+		Image:       filename,
+		EmpID:       empid_int,
+	}
+
+	result := database.DBConn.Create(&newsadd)
+	if result.Error != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to add news"})
+	}
+
+	return c.JSON(newsadd)
+
+}
+
+func GetNews(c *fiber.Ctx) error {
+
+	var news []struct {
+		Title       string `json:"title"`
+		Description string `json:"description"`
+		Image       string `json:"image"`
+	}
+
+	if err := database.DBConn.Table("news").Find(&news).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "News not found"})
+	}
+
+	if len(news) == 0 {
+		return c.JSON("No news")
+	}
+
+	return c.JSON(news)
+}
+
+// ยังไม่ได้ทำ 3
+func DeleteNews(c *fiber.Ctx) error {
+	// Check the authorization to delete news (e.g., only admins can delete)
+	empID := c.Params("empid")
+
+	var admin model.Employee
+	if err := c.BodyParser(&admin); err != nil {
+		log.Println("Error in parsing request.")
+	}
+
+	if err := database.DBConn.
+		Where("emp_id = ? AND position = ?", empID, "Admin").
+		First(&admin).Error; err != nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "No Authority"})
+	}
+
+	// Delete the news
+	var news model.News
+	if err := c.BodyParser(&news); err != nil {
+		log.Println("Error in parsing request.")
+	}
+
+	if err := database.DBConn.First(&news).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Invalid news ID"})
+	}
+
+	if err := database.DBConn.Delete(&news).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to delete news"})
+	}
+
+	return c.JSON(fiber.Map{"message": "News deleted successfully"})
 }

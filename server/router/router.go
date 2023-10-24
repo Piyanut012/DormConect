@@ -8,7 +8,7 @@ import (
 // Setup routing informatino
 func SetupRoutes(app *fiber.App) {
 
-	app.Get("/", controller.BlogList)
+	// app.Get("/", controller.BlogList)
 	app.Get("/:id", controller.BlogDetail)
 	// app.Post("/", controller.BlogCreate)
 	app.Put("/:id", controller.BlogUpdate)
@@ -33,10 +33,15 @@ func SetupRoutes(app *fiber.App) {
 	app.Get("/bills_room/:roomid", controller.GetBillingManager)
 	app.Put("/updatebill/:billid", controller.UpdateBillStatus)
 	app.Get("/billing/manager/occupants/:roomid", controller.GetOccupants)
+	app.Post("/add_student/:roomid", controller.AddDormStudent)
 
 	//Admin
 	app.Get("/admin/applications/:employeeid", controller.GetApplications)
 	app.Put("/admin/applications/filter/:studentid", controller.UpdateApplicationStatus)
-	app.Put("/admin/dormstudents/assignroom/:studentid", controller.AssignRoom)
+	app.Post("/admin/news/addnews/:empid", controller.AddNews)
+	app.Delete("/admin/news/deletenews/:empid", controller.DeleteNews)
+
+	//All
+	app.Get("/news/:id", controller.GetNews)
 
 }
