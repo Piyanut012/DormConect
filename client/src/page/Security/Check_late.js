@@ -8,7 +8,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import "./Check_late.css";
 import Slidebar from '../../components/SildeBar_Secur';
 
-const Edit = () => {
+const Check_late = () => {
   const [loading, setLoading] = useState(false);
   const params = useParams();
 
@@ -22,15 +22,16 @@ const Edit = () => {
 
   const saveForm = async (data) => {
     setLoading(true);
-    // console.log(data);
+
+    data.student_id = parseInt(data.student_id, 10);
 
     try {
-      const apiUrl = process.env.REACT_APP_API_ROOT + "/report/" + params.id;
+      const apiUrl = process.env.REACT_APP_API_ROOT + "/security/checklate/" + params.id;
       const response = await axios.post(apiUrl, data);
 
-      if (response.status === 201) {
+      if (response.status === 200) {
         console.log(response);
-        navigate(`/homepage/${params.id}`);
+        navigate(`/homepage_secur/${params.id}`);
       }
 
       setLoading(false);
@@ -54,7 +55,7 @@ const Edit = () => {
     <body>
       <Slidebar/>
       <checklate>
-        <div className="py-4 setz">
+        <div className="py-4">
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <div className="container">
@@ -75,9 +76,14 @@ const Edit = () => {
               <Col className="form-floating">
                 <input
                   defaultValue=""
-                  className={`${errors.username && "error"} form-control`}
+                  className={`${errors.student_id && "error"} form-control`}
                   placeholder="Please enter title"
-                  {...register("username")}
+                  {...register("student_id", {
+                    required: {
+                      value: true,
+                      message: "Post Content is required.",
+                    },
+                  })}
                 />
                 <label htmlFor="floatingInput">ID</label>
               </Col>
@@ -86,12 +92,7 @@ const Edit = () => {
                     defaultValue=""
                     className= {`${errors.reason && "error"} form-control`}
                     placeholder="Leave a comment here" id="floatingTextarea2" style={{height: '100px'}}
-                    {...register("reason", {
-                      required: {
-                        value: true,
-                        message: "Post Content is required.",
-                      },
-                    })}
+                    {...register("reason")}
                     />
                     <label htmlFor="floatingTextarea2">เหตุผล</label>
                 </div>
@@ -107,4 +108,4 @@ const Edit = () => {
   );
 };
 
-export default Edit;
+export default Check_late;

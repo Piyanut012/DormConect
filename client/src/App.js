@@ -19,17 +19,16 @@ import Signup from "./page/Login/Signup";
 //Student
 import Homepage from "./page/Homepage/Homepage";
 import Report from "./page/Homepage/Report";
-import Checkout from "./page/Homepage/Checkout";
+// import Checkout from "./page/Homepage/Checkout";
 import Paybills from "./page/Homepage/Paybills";
-import Paybill_once from "./page/Homepage/Paybill_once";
 
 //Dorm_Manager
 import Homepage_Dorm from "./page/DormManager/Homepage_Dorm";
 import Rooms from "./page/DormManager/Rooms";
 import Room_Info from "./page/DormManager/Room_info";
 import Report_Dorm from "./page/DormManager/Report";
-import Checkout_Dorm from "./page/DormManager/Checkout";
-import Add_Bill_Dorm from "./page/DormManager/Addbill";
+// import Checkout_Dorm from "./page/DormManager/Checkout";
+// import Add_Bill_Dorm from "./page/DormManager/Addbill";
 
 //Admin
 import Homepage_Admin from "./page/Admin/Homepage";
@@ -56,17 +55,16 @@ function App() {
         {/* Student */}
         <Route path="/homepage/:id" element={<Homepage />}/>
         <Route path="/paybills/:id" element={<Paybills />}/>
-        <Route path="/paybills/paybill/:id" element={<Paybill_once />}/>
         <Route path="/report/:id" element={<Report />}/>
-        <Route path="/checkout/:id" element={<Checkout />}/>
+        {/* <Route path="/checkout/:id" element={<Checkout />}/> */}
 
         {/* Dorm */}
         <Route path="/homepage_dorm/:id" element={<Homepage_Dorm />}/>
         <Route path="/rooms_dorm/:id" element={<Rooms />}/>
         <Route path="/rooms_dorm/:id/room_info/:roomid" element={<Room_Info />}/>
-        <Route path="/rooms_dorm/:id/room_info/:roomid/add_bill" element={<Add_Bill_Dorm />}/>
+        {/* <Route path="/rooms_dorm/:id/room_info/:roomid/add_bill" element={<Add_Bill_Dorm />}/> */}
         <Route path="/report_dorm/:id" element={<Report_Dorm />}/>
-        <Route path="/checkout_dorm/:id" element={<Checkout_Dorm />}/>
+        {/* <Route path="/checkout_dorm/:id" element={<Checkout_Dorm />}/> */}
 
         {/* Admin */}
         <Route path="/homepage_admin/:id" element={<Homepage_Admin />}/>

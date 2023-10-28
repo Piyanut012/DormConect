@@ -13,7 +13,7 @@ import Spinner from "react-bootstrap/Spinner";
 import "./Room_info.css";
 import Slidebar from '../../components/SildeBar_Dorm';
 
-const Home = () => {
+const Room_info = () => {
     const [apiData_Bills, setApiData_Bills] = useState(false);
     const [apiData_Stu, setApiData_Stu] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -107,58 +107,6 @@ const Home = () => {
     reset,
     formState: { errors },
   } = useForm();
-
-  //add bill
-  // const saveForm = async (data) => {
-  //   setLoading(true);
-  //   console.log("เข้าบิลได้ไง")
-
-  //   data.water = parseInt(data.water, 10);
-  //   data.electricity = parseInt(data.electricity, 10);
-  //   data.room = parseInt(data.room, 10);
-
-  //   try {
-  //     const apiUrl = process.env.REACT_APP_API_ROOT + "/addbill/" + params.roomid;
-  //     const response = await axios.post(apiUrl, data);
-
-  //     if (response.status === 200) {
-  //       console.log(response);
-  //       closeAddBillModal();
-  //       reset();
-  //       fetchData_Bills();
-  //     }
-
-  //     setLoading(false);
-  //   } catch (error) {
-  //     setLoading(false);
-  //     console.log(error.response);
-  //   }
-  // };
-
-  // //Add Student in room
-  // const Add_Stu = async (data) => {
-  //   setLoading(true);
-  //   console.log("เข้า")
-
-  //   data.student_id= parseInt(data.student_id, 10);
-
-  //   try {
-  //     const apiUrl = process.env.REACT_APP_API_ROOT + "/add_student/" + params.roomid;
-  //     const response = await axios.post(apiUrl, data);
-
-  //     if (response.status === 200) {
-  //       console.log(response);
-  //       closeAddStuModal();
-  //       reset();
-  //       fetchData_Stu();
-  //     }
-
-  //     setLoading(false);
-  //   } catch (error) {
-  //     setLoading(false);
-  //     console.log(error.response);
-  //   }
-  // };
 
   // Handle Add Bill form submission
   const handleAddBillSubmit = async (e) => {
@@ -306,9 +254,6 @@ const Home = () => {
           <div className="container px-4 py-5" id="hanging-icons">
             <div className="row g-4 py-5 row-cols-1 row-cols-lg-3">
             {/* info_stu */}
-            {/* <section className="vh-100" style={{ backgroundColor: '#f4f5f7' }}>
-              <MDBContainer className="py-5 h-100">
-                <MDBRow className="justify-content-center align-items-center h-100"> */}
                 {apiData_Stu && Array.isArray(apiData_Stu) &&
                   apiData_Stu.map((Stu, index) => {
                   if (Stu.year !== 0) {
@@ -382,7 +327,8 @@ const Home = () => {
                     return (
                       <Col
                         id={`report_${bills.bill_id}`}
-                        className={`col d-flex align-items-start report ${bills.status === 'UNPAID' ? 'status-unpaid' : bills.status === 'VERIFYING' ? 'status-verifying' : bills.status === 'PAID' ? 'status-paid' : ''}`}
+                        className={`col d-flex align-items-start report ${bills.status === 'UNPAID' ? 'status-unpaid' 
+                        : bills.status === 'VERIFYING' ? 'status-verifying' : bills.status === 'PAID' ? 'status-paid' : ''}`}
                         key={index}
                       >
                         <div className="icon-square text-body-emphasis bg-body-secondary d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
@@ -396,7 +342,8 @@ const Home = () => {
                           <p>ยอดรวม {bills.water + bills.electricity + bills.room}</p>
                           <Col xs="12" className="py-3">
                             <label className="setx">ใบเสร็จ</label>
-                            <img src={`${process.env.REACT_APP_API_ROOT}/${bills.receipt}`} className="d-block mx-lg-auto" alt="None" width={50} height={75} loading="lazy"
+                            <img src={`${process.env.REACT_APP_API_ROOT}/${bills.receipt}`} className="d-block mx-lg-auto" 
+                            alt="None" width={50} height={75} loading="lazy"
                             onClick={() => setSelectedImage(`${process.env.REACT_APP_API_ROOT}/${bills.receipt}`)} // Open image in modal
                             style={{ cursor: "pointer" }}
                             />
@@ -440,14 +387,6 @@ const Home = () => {
           <main className="form-signin w-100 m-auto">
             <form onSubmit={handleSubmit(handleAddBillSubmit)}>
             <Col className="form-floating">
-              {/* <input
-                defaultValue=""
-                type="number"
-                className={`${errors.water && "error"} form-control setinput`}
-                {...register("water", {
-                  required: { value: true, message: "Title is required." },
-                })}
-              /> */}
               <input
                 type="number"
                 className={`${errors.water && "error"} form-control setinput`}
@@ -459,14 +398,6 @@ const Home = () => {
               <label htmlFor="floatingInput">น้ำ</label>
             </Col>
             <Col className="form-floating">
-              {/* <input
-                defaultValue=""
-                type="number"
-                className={`${errors.electricity && "error"} form-control setinput`}
-                {...register("electricity", {
-                  required: { value: true, message: "Title is required." },
-                })}
-              /> */}
               <input
                 type="number"
                 className={`${errors.electricity && "error"} form-control setinput`}
@@ -478,14 +409,6 @@ const Home = () => {
               <label htmlFor="floatingInput">ไฟ</label>
             </Col>
             <Col className="form-floating">
-              {/* <input
-                defaultValue=""
-                type="number"
-                className={`${errors.room && "error"} form-control setinput`}
-                {...register("room", {
-                  required: { value: true, message: "Title is required." },
-                })}
-              /> */}
               <input
                 type="number"
                 className={`${errors.room && "error"} form-control setinput`}
@@ -535,4 +458,4 @@ const Home = () => {
     );
 }
 
-export default Home;
+export default Room_info;

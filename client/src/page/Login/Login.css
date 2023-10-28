@@ -65,7 +65,7 @@ login {
     color: #ff6e30;
   }
   
-  img {
+  .img {
     border-radius: 20px;
   }
   
@@ -113,5 +113,10 @@ login {
     --bs-btn-disabled-color: #fff;
     --bs-btn-disabled-bg: #ff6e30;
     --bs-btn-disabled-border-color: #ff6e30;
+  }
+
+  .form-signin .error-message {
+    color: red;
+    margin: 10px 0;
   }
 }

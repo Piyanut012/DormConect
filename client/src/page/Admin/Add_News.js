@@ -7,7 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import "./Add_News.css";
 
-const Edit = () => {
+const Add_News = () => {
   const [loading, setLoading] = useState(false);
   const params = useParams();
 
@@ -57,7 +57,7 @@ const Edit = () => {
   return (
     <body>
       <addnews>
-        <div className="py-4 setz">
+        <div className="py-4">
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <div className="container">
@@ -125,4 +125,4 @@ const Edit = () => {
   );
 };
 
-export default Edit;
+export default Add_News;

@@ -24,10 +24,6 @@ const Signup = () => {
 
   const saveForm = async (data) => {
     setLoading(true);
-    // console.log(data);
-
-    // data.file = data.image[0];
-    // data.image = null;
 
     data.building_id = parseInt(data.building_id, 10);
 
@@ -37,7 +33,7 @@ const Signup = () => {
 
       if (response.status === 200) {
         console.log(response);
-        navigate("/H", {
+        navigate("/", {
           state: "Saved successfully",
         });
       }
@@ -61,11 +57,11 @@ const Signup = () => {
 
     return (
         <body>
-          <login>
-            <div className="py-4 setz">
+          <signup>
+            <div className="py-4">
             <meta charSet="UTF-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossOrigin="anonymous" />
+            {/* <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossOrigin="anonymous" /> */}
               <main className="form-signin w-100 m-auto">
 
                 <form onSubmit={handleSubmit(saveForm)}>
@@ -78,14 +74,11 @@ const Signup = () => {
                   })}
                   >
                     <option value={0} disabled selected>เลือกอาคาร</option>
-                    <option value={1}>1-2 (พัดลมชาย)</option>
-                    <option value={3}>3 (พัดลมชาย)</option>
-                    <option value={4}>4, 5 (พัดลมหญิง)</option>
-                    <option value={6}>6 (พัดลมหญิง)</option>
-                    <option value={7}>7 (แอร์ชาย)</option>
-                    <option value={8}>8 (แอร์หญิง)</option>
-                    <option value={9}>9-10 (ตึกใหม่ชาย)</option>
-                    <option value={11}>11-12 (ตึกใหม่หญิง)</option>
+                    <option value={1}>1 (พัดลมชาย)</option>
+                    <option value={2}>2 (พัดลมหญิง)</option>
+                    <option value={3}>3 (แอร์ชาย)</option>
+                    <option value={4}>4 (แอร์หญิง)</option>
+                    <option value={5}>5 (แอร์ต่างชาติ)</option>
                   </select>
 
                   <select type="Income" 
@@ -141,7 +134,7 @@ const Signup = () => {
               </main>
           </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"  crossorigin="anonymous"></script>
-        </login>
+        </signup>
       </body>
     );
 }

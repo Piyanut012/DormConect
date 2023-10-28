@@ -11,6 +11,8 @@ import {
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import Modal from "react-bootstrap/Modal";
 
 import Spinner from "react-bootstrap/Spinner";
 import './Homepage.css';
@@ -19,11 +21,18 @@ import Slidebar from '../../components/SildeBar_Admin';
 const Home = () => {
     const [apiData, setApiData] = useState(false);
     const [loading, setLoading] = useState(true);
-    const params = useParams();
+    const [showAddStuModal, setShowAddStuModal] = useState(false);
 
+    const params = useParams();
     const location = useLocation()
 
-    useEffect(() => {
+     const openAddStuModal = () => {
+      setShowAddStuModal(true);
+    };
+    const closeAddStuModal = () => {
+      setShowAddStuModal(false);
+    };
+
     const fetchData = async () => {
       try {
         const apiUrl = process.env.REACT_APP_API_ROOT + "/news/" + params.id;
@@ -40,9 +49,54 @@ const Home = () => {
       }
     };
 
-    fetchData();
+    useEffect(() => {
+      fetchData();
     return () => {};
     }, []);
+
+    const {
+      register,
+      handleSubmit,
+      formState: { errors },
+    } = useForm();
+
+    const DeleteNews = async (news_id) => {
+      setLoading(true);
+      console.log(news_id);
+  
+      try {
+        const apiUrl = process.env.REACT_APP_API_ROOT + "/admin/news/deletenews/" + params.id + "/" + news_id;
+        const response = await axios.delete(apiUrl);
+  
+        if (response.status === 200) {
+          console.log(response);
+          fetchData();
+        }
+  
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        console.log(error.response);
+      }
+    };
+
+    const ResetStatusStu = async () => {
+      setLoading(true);
+  
+      try {
+        const apiUrl = process.env.REACT_APP_API_ROOT + "/admin/dormstudents/resetstatus/" + params.id;
+        const response = await axios.put(apiUrl);
+  
+        if (response.status === 200) {
+          console.log(response);
+        }
+  
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        console.log(error.response);
+      }
+    };
 
     console.log(apiData);
     
@@ -76,27 +130,12 @@ const Home = () => {
                 </ul>
                 <div className="col-md-3 text-end">
                   <Link to={`/add_news_admin/${params.id}`}>
-                    <button type="button" className="btn btn-outline-primary me-2" >Add News</button>
+                    <button type="button" className="btn btn-outline-primary me-2" >เพิ่มข่าว</button>
                   </Link>
+                  <button type="button" className="btn btn-outline-primary me-2" onClick={openAddStuModal} >คืนค่าสถานะ</button>
                 </div>
               </Col>
             </div>
-
-            {/* New */}
-            {/* {apiData &&
-                apiData.map((news, index) => (
-            <Col className="container col-xxl-8 px-4 py-5">
-              <div className="row flex-lg-row-reverse align-items-center g-5 py-5">
-                <div className="col-10 col-sm-8 col-lg-6">
-                  <img src={`${process.env.REACT_APP_API_ROOT}/${news.image}`} className="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width={700} height={500} loading="lazy" />
-                </div>
-                <div className="col-lg-6">
-                  <h1 className="display-5 fw-bold text-body-emphasis lh-1 mb-3"> {news.title}</h1> 
-                  <p className="lead">{news.description}</p>                            
-                </div>
-              </div>
-            </Col>
-            ))} */}
 
             {/* New */}
             {apiData &&
@@ -132,12 +171,33 @@ const Home = () => {
                     {news.description}
                   </p>
                   <MDBBtn>Read More</MDBBtn>
+                  <form onSubmit={(e) => { e.preventDefault(); DeleteNews(news.news_id); }}>
+                    <button type="submit" className="btn btn-outline-primary me-2 setmargin"><i className="fa fa-solid fa-trash fa-2x"/></button>
+                  </form>
                 </MDBCol>
               </MDBRow>
             </MDBContainer>
             ))}
             </home>
           </div>
+
+          {/* Inside the modal Add Student */}
+        <Modal show={showAddStuModal} onHide={closeAddStuModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>แน่ใจที่จะคืนค่าสถานะนักศึกษา</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          <modell>
+          <main className="form-signin w-100 m-auto">
+            <form onSubmit={handleSubmit(ResetStatusStu)}>
+              <button type="submit" className="btn btn-primary w-100 py-2 setbutton">ใช่</button>
+              <button type="button" className="btn btn-primary w-100 py-2 setbutton" onClick={closeAddStuModal}>ไม่</button>
+            </form>
+            </main>
+            </modell>
+          </Modal.Body>
+        </Modal>
+
         </homepage>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"  crossorigin="anonymous"></script>
       </body>

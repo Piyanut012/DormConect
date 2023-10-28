@@ -88,4 +88,8 @@ reportd {
   .status-received {
     background-color: rgb(241, 139, 114); /* Change to the desired background color for COMPLETED */
   }
+
+  .seticon {
+    margin-right: 0px;
+  }
 }

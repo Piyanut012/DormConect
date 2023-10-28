@@ -55,6 +55,10 @@ homelogin {
     --bs-btn-disabled-border-color: #ff6e30;
   }
 
+  .border-bottom {
+    border-bottom: var(--bs-border-width) var(--bs-border-style) #ffffff!important;
+}
+
 }
   
 

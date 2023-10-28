@@ -12,6 +12,7 @@ import "./Login.css";
 
 const Home = () => {
     const [apiData, setApiData] = useState(false);
+    const [error, setError] = useState(null); 
     // const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const {
@@ -20,42 +21,6 @@ const Home = () => {
       formState: { errors },
     } = useForm();
 
-    // useEffect(() => {
-    // const fetchData = async () => {
-    //   try {
-    //     const apiUrl = process.env.REACT_APP_API_ROOT;
-    //     const response = await axios.get(apiUrl);
-
-    //     if (response.status === 200){
-    //       if (response?.data.statusText === "Ok"){
-    //         setApiData(response?.data?.blog_records);
-    //       }
-    //     }
-
-    //     setLoading(false);
-    //   }catch (error){
-    //     setLoading(false);
-    //     console.log(error.response);
-    //   }
-    // };
-
-    // fetchData();
-    // return () => {};
-    // }, []);
-
-    // console.log(apiData);
-
-
-    
-    // if (loading) {
-    //   return (
-    //   <>
-    //     <Container className="spinner">
-    //       <Spinner animation="grow"/>
-    //     </Container>
-    //   </>
-    //   );
-    // }
 
     const saveForm = async (data) => {
       // setLoading(true);
@@ -73,7 +38,7 @@ const Home = () => {
   
         // setLoading(false);
       } catch (error) {
-        // setLoading(false);
+        setError("Invalid username or password");
         console.log(error.response);
       }
     };
@@ -86,32 +51,22 @@ const Home = () => {
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             {/* <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossOrigin="anonymous" /> */}
               <main className="form-signin w-100 m-auto">
-
-                {/* <form>
-                  <h1 className="h3 mb-3= fw-normal">DormConncect</h1>
-                  <div className="form-floating">
-                    <input type="email" className="form-control" id="floatingInput" placeholder="name@example.com" />
-                    <label htmlFor="floatingInput">ID</label>
-                  </div>
-                  <div className="form-floating">
-                    <input type="password" className="form-control" id="floatingPassword" placeholder="Password" />
-                    <label htmlFor="floatingPassword">Password</label>
-                  </div>
-                  <Link to={`/homepage`}>
-                    <button className="btn btn-primary w-100 py-2" type="submit">Log in</button>
-                  </Link>
-                </form> */}
-
               
               <form onSubmit={handleSubmit(saveForm)}>
                   <h1 className="h3 mb-3= fw-normal">DormConncect</h1>
+                  {error && <div className="error-message">{error}</div>}
                   <Col className="form-floating">
                     <input
                       type="email"
                       defaultValue=""
                       className={`${errors.email && "error"} form-control`}
                       placeholder="Please enter title"
-                      {...register("email")}
+                      {...register("email", {
+                        required: {
+                          value: true,
+                          message: "Username is required.",
+                        },
+                      })}
                     />
                     <label htmlFor="floatingInput">Gmail(kmitl.ac.th)</label>
                   </Col>
@@ -121,7 +76,12 @@ const Home = () => {
                       defaultValue=""
                       className={`${errors.password && "error"} form-control`}
                       placeholder="Please enter content"
-                      {...register("password")}
+                      {...register("password", {
+                        required: {
+                          value: true,
+                          message: "Username is required.",
+                        },
+                      })}
                     />
                     <label htmlFor="floatingPassword">Password</label>
                   </Col>

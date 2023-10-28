@@ -56,7 +56,7 @@ const Home = () => {
       <body>
         <Slidebar/>
         <rooms>
-          <div className="py-4 setz">
+          <div className="py-4">
           <meta charSet="UTF-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
           <title>Document</title>
@@ -89,7 +89,8 @@ const Home = () => {
               {/* Room */}
               {apiData && 
                 apiData.map((rooms, index) => (
-                    <Col id={`room_${rooms.room_id}`} className={`col d-flex align-items-start ${rooms.status === 'OCCUPIED' ? 'status-occupied' : rooms.status === 'UNOCCUPIED' ? 'status-unoccupied' : ''}`} key={index}>
+                    <Col id={`room_${rooms.room_id}`} className={`col d-flex align-items-start ${rooms.status === 'OCCUPIED' ? 'status-occupied' 
+                    : rooms.status === 'UNOCCUPIED' ? 'status-unoccupied' : ''}`} key={index}>
                     <div className="icon-square text-body-emphasis bg-body-secondary d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-door-open-fill" viewBox="0 0 16 16">
                       <path d="M1.5 15a.5.5 0 0 0 0 1h13a.5.5 0 0 0 0-1H13V2.5A1.5 1.5 0 0 0 11.5 1H11V.5a.5.5 0 0 0-.57-.495l-7 1A.5.5 0 0 0 3 1.5V15H1.5zM11 2h.5a.5.5 0 0 1 .5.5V15h-1V2zm-2.5 8c-.276 0-.5-.448-.5-1s.224-1 .5-1 .5.448.5 1-.224 1-.5 1z"/>
@@ -100,11 +101,6 @@ const Home = () => {
                         <Link to={`room_info/${rooms.room_id}`}>{rooms.room_id}</Link>
                       </h3>
                     </Col>
-                    {/* <Col className="col-md-3 text-end">
-                        <Link to={`/add_bill/${record.id}`}>
-                          <button type="button" className="btn btn-outline-primary me-2" >Add Bill</button>
-                        </Link>
-                    </Col> */}
                   </Col>
                 ))}
             </div>

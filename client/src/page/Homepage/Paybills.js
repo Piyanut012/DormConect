@@ -12,7 +12,7 @@ import Spinner from "react-bootstrap/Spinner";
 import "./Paybills.css";
 import Slidebar from '../../components/SildeBar_Stu';
 
-const Home = () => {
+const Paybills = () => {
     const [apiData, setApiData] = useState(false);
     const [loading, setLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState(null); // State for selected image
@@ -217,4 +217,4 @@ const Home = () => {
     );
 }
 
-export default Home;
+export default Paybills;

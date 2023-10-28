@@ -9,7 +9,7 @@ import "./Report.css";
 import Slidebar from '../../components/SildeBar_Stu';
 
 
-const Add = () => {
+const Report = () => {
   const [apiData, setApiData] = useState(false);
   const [loading, setLoading] = useState(false);
   const params = useParams();
@@ -77,7 +77,7 @@ const Add = () => {
     <body>
       <Slidebar/>
       <reportstu>
-        <div className="py-4 setz">
+        <div className="py-4">
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         {/* <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossOrigin="anonymous" /> */}
@@ -125,7 +125,8 @@ const Add = () => {
                   return (
                     <Col
                       id={`report_${reports.room_id}`}
-                      className={`col d-flex align-items-start report ${reports.status === 'ONGOING' ? 'status-ongoing' : reports.status === 'RECEIVED' ? 'status-received' : reports.status === 'COMPLETED' ? 'status-completed' : ''}`}
+                      className={`col d-flex align-items-start report ${reports.status === 'ONGOING' ? 'status-ongoing' 
+                      : reports.status === 'RECEIVED' ? 'status-received' : reports.status === 'COMPLETED' ? 'status-completed' : ''}`}
                       key={index}
                     >
                       <div className="icon-square text-body-emphasis bg-body-secondary d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
@@ -154,4 +155,4 @@ const Add = () => {
   );
 };
 
-export default Add;
+export default Report;

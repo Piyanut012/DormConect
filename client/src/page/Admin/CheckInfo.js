@@ -12,7 +12,7 @@ import "./checkinfo.css";
 import Slidebar from '../../components/SildeBar_Admin';
 
 
-const Home = () => {
+const Checkinfo = () => {
     const [apiData, setApiData] = useState(false);
     const [loading, setLoading] = useState(true);
 
@@ -86,7 +86,7 @@ const Home = () => {
       <body>
         <Slidebar/>
         <checkinfo>
-          <div className="py-4 setz">
+          <div className="py-4">
           <meta charSet="UTF-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
           <title>Document</title>
@@ -125,7 +125,7 @@ const Home = () => {
               </tr>
             </thead>
             <tbody>
-              {apiData.map((applys, index) => (
+              {apiData && Array.isArray(apiData) && apiData.map((applys, index) => (
                 <tr key={index}>
                   <td>{applys.student_id}</td>
                   <td>{applys.income}</td>
@@ -161,4 +161,4 @@ const Home = () => {
     );
 }
 
-export default Home;
+export default Checkinfo;

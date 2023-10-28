@@ -3,12 +3,10 @@ body {
   margin: 0;
   padding: 0;
   background-size: cover;
-  background-color: #ff6e301a;
+  background-color: #ffd6c4;;
   background-position: center;
   background-attachment: fixed;
+  min-height: 100vh; /* Set a minimum height to fill the initial screen */
+  overflow: auto;
 
-  .py-4 {
-    --bs-bg-opacity: 1;
-    background-color: #ff6e301a;
-  }
 }
