@@ -13,6 +13,7 @@ func SetupRoutes(app *fiber.App) {
 	// app.Post("/", controller.BlogCreate)
 	app.Put("/:id", controller.BlogUpdate)
 	app.Delete("/:id", controller.BlogDelete)
+
 	//Login
 	app.Post("/login_stu", controller.Login_Stu)
 	app.Post("/login_emp", controller.LoginEmployee)
@@ -39,7 +40,11 @@ func SetupRoutes(app *fiber.App) {
 	app.Get("/admin/applications/:employeeid", controller.GetApplications)
 	app.Put("/admin/applications/filter/:studentid", controller.UpdateApplicationStatus)
 	app.Post("/admin/news/addnews/:empid", controller.AddNews)
-	app.Delete("/admin/news/deletenews/:empid", controller.DeleteNews)
+	app.Delete("/admin/news/deletenews/:empid/:newsid", controller.DeleteNews)
+	app.Put("/admin/dormstudents/resetstatus/:empid", controller.ResetDormStudentStatus)
+
+	//Security
+	app.Post("/security/checklate/:empid", controller.CheckLate)
 
 	//All
 	app.Get("/news/:id", controller.GetNews)

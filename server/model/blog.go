@@ -8,11 +8,13 @@ type Blog struct {
 }
 
 type DormStudent struct {
-	Username   string ` gorm:"primaryKey" json:"username"`
+	Username   string `gorm:"primaryKey" json:"username"`
 	Password   string `json:"password"`
 	StudentID  int    `json:"student_id"`
 	RoomID     int    `gorm:"default:NULL" json:"room_id"`
 	StudentImg string `gorm:"default:NULL" json:"student_img"`
+	Late       int    `gorm:"default:0" json:"late"`
+	Status     string `gorm:"default:'ACTIVE'" json:"status"`
 }
 
 func (DormStudent) TableName() string {
@@ -30,6 +32,10 @@ type KMITLStudent struct {
 	Password  string `json:"password"`
 }
 
+func (KMITLStudent) TableName() string {
+	return "kmitl_stu"
+}
+
 type Application struct {
 	ApplyID    int    `gorm:"primaryKey" json:"apply_id"`
 	StudentID  int    `json:"student_id"`
@@ -38,10 +44,6 @@ type Application struct {
 	Distance   string `json:"distance"`
 	Reason     string `json:"reason"`
 	Status     string `gorm:"default:'REVIEWING'" json:"status"`
-}
-
-func (KMITLStudent) TableName() string {
-	return "kmitl_stu"
 }
 
 func (Application) TableName() string {
@@ -110,4 +112,15 @@ type News struct {
 
 func (News) TableName() string {
 	return "news"
+}
+
+type LateCheck struct {
+	Username string `gorm:"primaryKey" json:"username"`
+	LateDate string `json:"late_date"`
+	Reason   string `json:"reason"`
+	EmpID    int    `json:"emp_id"`
+}
+
+func (LateCheck) TableName() string {
+	return "late_check"
 }
